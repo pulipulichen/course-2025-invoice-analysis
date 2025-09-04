@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消費分析</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><path d="M0,20 Q250,80 500,40 T1000,60 L1000,0 Z"/></svg>');
+            background-size: cover;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fc;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #2196F3;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card.total .number { color: #4CAF50; }
+        .stat-card.avg .number { color: #FF9800; }
+        .stat-card.items .number { color: #9C27B0; }
+        .stat-card.period .number { color: #2196F3; }
+        
+        .stat-card .label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .charts-container {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .chart-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .chart-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .analysis {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            margin: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .analysis h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .analysis-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stat-card .number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 消費分析</h1>
+            <div class="subtitle">2025年5月～8月消費報告</div>
+        </div>
+        
+        <div class="stats-overview">
+            <div class="stat-card total">
+                <div class="number">NT$9,721</div>
+                <div class="label">總消費金額</div>
+            </div>
+            <div class="stat-card avg">
+                <div class="number">NT$810</div>
+                <div class="label">月平均消費</div>
+            </div>
+            <div class="stat-card items">
+                <div class="number">40</div>
+                <div class="label">消費項目數</div>
+            </div>
+            <div class="stat-card period">
+                <div class="number">4</div>
+                <div class="label">月份期間</div>
+            </div>
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-section">
+                <h2>📈 每週消費趨勢</h2>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h2>🥧 月消費類別分析</h2>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="analysis">
+            <h2>🔍 消費分析總結</h2>
+            <div class="analysis-content">
+                <p><strong>期間概況：</strong> 本次分析涵蓋2025年5月23日至8月24日，總計4個月期間，共計消費<span class="highlight">NT$9,721</span>。</p>
+                
+                <p><strong>最昂貴項目：</strong> <span class="highlight">Panasonic超音波水流除垢機 (NT$2,750)</span> 是單筆最高消費，屬於家電類別，顯示對健康生活品質的重視。</p>
+                
+                <p><strong>交通費分析：</strong> 高鐵票券共計<span class="highlight">NT$4,425</span>，佔總消費45.5%，顯示台北-左營間的頻繁往返需求。</p>
+                
+                <p><strong>日常消費模式：</strong> 蔬菜類商品出現頻率最高（7次），包含彩椒、玉米筍、青花菜等，展現健康飲食習慣。生活用品如S型掛鉤（購買3次）顯示居家整理需求。</p>
+                
+                <p><strong>消費高峰：</strong> 8月23日單日消費<span class="highlight">NT$539</span>為日常消費高峰，主要採購食品與生活用品。整體消費模式顯示規律的生活型態與實際需求導向的理性消費。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 數據處理
+        const expenseData = [
+            {date: '2025-05-23', category: '高鐵票', price: 1490},
+            {date: '2025-05-23', category: '交通', price: 1490},
+            {date: '2025-06-26', category: '交通費', price: 1445},
+            {date: '2025-08-16', category: '商品', price: 147},
+            {date: '2025-08-16', category: '收納品', price: 349},
+            {date: '2025-08-16', category: '掛鉤', price: 49},
+            {date: '2025-08-16', category: '掛鉤', price: 49},
+            {date: '2025-08-16', category: '掛鉤', price: 49},
+            {date: '2025-08-16', category: '生活家居', price: 347},
+            {date: '2025-08-17', category: '汽油', price: 90},
+            {date: '2025-08-17', category: '蔬菜', price: 85+69+48+38+26+18+38+45},
+            {date: '2025-08-17', category: '豆製品', price: 30},
+            {date: '2025-08-17', category: '飲料', price: 10},
+            {date: '2025-08-17', category: '咖啡', price: 38-2-6-6},
+            {date: '2025-08-19', category: '鮮奶', price: 167},
+            {date: '2025-08-19', category: '漱口水', price: 139},
+            {date: '2025-08-19', category: '牙膏', price: 99},
+            {date: '2025-08-23', category: '肉品', price: 248},
+            {date: '2025-08-23', category: '冷凍', price: 58},
+            {date: '2025-08-23', category: '麵包', price: 39+117-18},
+            {date: '2025-08-23', category: '飲品', price: 39+56},
+            {date: '2025-08-24', category: '家電', price: 2750}
+        ];
+
+        // 按週分組數據
+        function getWeekRange(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(d.setDate(diff));
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            
+            return {
+                start: monday.toISOString().split('T')[0],
+                end: sunday.toISOString().split('T')[0],
+                label: `${monday.getMonth()+1}/${monday.getDate()}-${sunday.getMonth()+1}/${sunday.getDate()}`
+            };
+        }
+
+        const weeklyData = {};
+        expenseData.forEach(item => {
+            const weekRange = getWeekRange(item.date);
+            const key = weekRange.label;
+            if (!weeklyData[key]) {
+                weeklyData[key] = 0;
+            }
+            weeklyData[key] += item.price;
+        });
+
+        // 按月和類別分組
+        const monthlyCategories = {};
+        expenseData.forEach(item => {
+            const month = new Date(item.date).getMonth() + 1;
+            const monthKey = `${month}月`;
+            
+            if (!monthlyCategories[monthKey]) {
+                monthlyCategories[monthKey] = {};
+            }
+            
+            if (!monthlyCategories[monthKey][item.category]) {
+                monthlyCategories[monthKey][item.category] = 0;
+            }
+            monthlyCategories[monthKey][item.category] += item.price;
+        });
+
+        // 合併相似類別並排序
+        function consolidateCategories(categories) {
+            const consolidated = {};
+            
+            Object.keys(categories).forEach(cat => {
+                let newCat = cat;
+                if (cat.includes('交通') || cat.includes('高鐵')) newCat = '交通運輸';
+                if (cat.includes('蔬菜')) newCat = '蔬菜類';
+                if (cat.includes('飲') || cat.includes('咖啡')) newCat = '飲品類';
+                if (cat.includes('麵包')) newCat = '麵包類';
+                if (cat.includes('家電')) newCat = '家電類';
+                if (cat.includes('掛鉤') || cat.includes('收納') || cat.includes('生活')) newCat = '居家用品';
+                
+                if (!consolidated[newCat]) consolidated[newCat] = 0;
+                consolidated[newCat] += categories[cat];
+            });
+            
+            return consolidated;
+        }
+
+        // 週線圖
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(weeklyData),
+                datasets: [{
+                    label: '週消費金額',
+                    data: Object.values(weeklyData),
+                    borderColor: '#2196F3',
+                    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2196F3',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'NT$' + value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 8
+                    }
+                }
+            }
+        });
+
+        // 圓餅圖 - 使用8月數據（最完整的月份）
+        const augustData = consolidateCategories(monthlyCategories['8月'] || {});
+        const sortedCategories = Object.entries(augustData).sort((a, b) => b[1] - a[1]);
+
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: sortedCategories.map(([cat]) => cat),
+                datasets: [{
+                    data: sortedCategories.map(([, amount]) => amount),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40',
+                        '#FF6384',
+                        '#C9CBCF'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return context.label + ': NT$' + value.toLocaleString() + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '50%'
+            }
+        });
+    </script>
+</body>
+</html>
