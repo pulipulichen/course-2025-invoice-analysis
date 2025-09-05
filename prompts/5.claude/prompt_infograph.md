@@ -1,4 +1,4 @@
-分析 invoice.html 跟 invoice_total.html ，製作資訊圖表。
+分析 invoice.html 跟 invoice_total.html ，製作資訊圖表，用HTML格式輸出。
 
 資訊圖表裡面必須包含以下內容：
 - 標題是「消費分析」。
