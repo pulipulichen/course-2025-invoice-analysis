@@ -14,3 +14,7 @@
 
 https://pulipulichen.github.io/course-2025-invoice-analysis/materials/invoices.pdf
 https://pulipulichen.github.io/course-2025-invoice-analysis/materials/invoices.zip
+
+
+https://pulipulichen.github.io/course-2025-invoice-analysis/materials/invoice.html
+https://pulipulichen.github.io/course-2025-invoice-analysis/materials/invoice_total.html
